@@ -76,7 +76,44 @@ int update_board(int board[], int well) {
     }
   }
 
-  if ((current_well == 6) && (board[current_well] == 1)) {
+
+
+
+  // This block deals with capture. Landing in an empty well is understood as the current_well containing 1 stone.
+  // A better programmer would put this into a swtich statement. If you find a better programmer, let me know.
+
+  if ((current_well == 1) && (board[current_well] == 1) && (board[13] != 0)) {
+    board[1] = 0;
+    board[7] = board[7] + board[13] + 1;
+    board[13] = 0;
+  }
+
+  if ((current_well == 2) && (board[current_well] == 1) && (board[12] != 0)) {
+    board[2] = 0;
+    board[7] = board[7] + board[12] + 1;
+    board[12] = 0;
+  }
+
+  if ((current_well == 3) && (board[current_well] == 1) && (board[11] != 0)) {
+    board[3] = 0;
+    board[7] = board[7] + board[11] + 1;
+    board[11] = 0;
+  }
+
+  if ((current_well == 4) && (board[current_well] == 1) && (board[10] != 0)) {
+    board[4] = 0;
+    board[7] = board[7] + board[10] + 1;
+    board[10] = 0;
+  }
+
+
+  if ((current_well == 5) && (board[current_well] == 1) && (board[9] != 0)) {
+    board[5] = 0;
+    board[7] = board[7] + board[9] + 1;
+    board[9] = 0;
+  }
+
+  if ((current_well == 6) && (board[current_well] == 1) && (board[8] != 0)) {
     board[6] = 0;
     board[7] = board[7] + board[8] + 1;
     board[8] = 0;
@@ -151,6 +188,6 @@ int main() {
 
 /*************************************************************************
 To do:
-  Change update_board to include capture
+  Allow for double moves
   Function for flipping the board
 **************************************************************************/
