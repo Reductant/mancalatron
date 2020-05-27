@@ -76,11 +76,12 @@ int update_board(int board[], int well) {
     }
   }
 
-  //if (current_well == 6) && (board[current_well] == 1) {
-  //  board[6] = 0;
-  //  board[7] = board[7] + board[8] + 1;
-  //  board[8] = 0;
-  //}
+  if ((current_well == 6) && (board[current_well] == 1)) {
+    board[6] = 0;
+    board[7] = board[7] + board[8] + 1;
+    board[8] = 0;
+  }
+
 
   return(0);
 }
