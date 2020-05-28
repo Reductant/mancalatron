@@ -54,8 +54,6 @@ int update_board(int board[], int well) {
   }
 
 
-
-
   // This needlessly repetitive block deals with capture. Landing in an empty well is understood as the current_well containing 1 stone.
   // A better programmer would put this into a swtich statement. If you find a better programmer, let me know.
 
@@ -97,7 +95,12 @@ int update_board(int board[], int well) {
   }
 
 
-  return(0);
+  if (current_well == 7) {
+    return (0);
+  } else {
+    return(1);
+  }
+
 }
 
 
