@@ -6,8 +6,9 @@ int move_number = 0;  // Counts the number of (half-)moves
 bool playing = true;  // Is game ongoing? Quit condition for main loop.
 int player = 0;       // Whose turn is it? 0 or 1
 int move_complete;    // Is the move finished? 0 means a double move.
+int x;
 
-
+//int board[] = {0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3};
 int board[] = {0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3};
 /********************************************************************
 This is the board from the POV of the player playing right now: player_zero.
@@ -23,13 +24,16 @@ To allow easy redistribution, wells are numbered clockwise as follows:
 ***********************************************************************/
 
 
-
 int main() {
+
 
   // Main game loop
   while (playing) {
 
-    std::cout << "Move number " << move_number;
+    player = move_number % 2;
+
+    std::cout << "\n\nMove number " << move_number << "\n";
+    std::cout << "Player: " << player << "\n";
 
     print_board(board);
 
@@ -59,7 +63,8 @@ int main() {
       continue;
     } else {
       ++move_number;
-      // Change player
+      if (player == 0) player = 1; else player = 0;
+      flip_board(board);
     }
 
   }
@@ -71,7 +76,6 @@ int main() {
 
 /*************************************************************************
 To do:
-  Allow for double moves
   Function for flipping the board
   Compute final score
   Maybe combine update_board and check_for_finish?

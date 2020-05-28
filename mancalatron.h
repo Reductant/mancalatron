@@ -94,7 +94,8 @@ int update_board(int board[], int well) {
     board[8] = 0;
   }
 
-
+  // If you finish in your mancala, it's a double move.
+  // Signal the move is not over (return 0)
   if (current_well == 7) {
     return (0);
   } else {
@@ -131,4 +132,23 @@ int check_for_finish(int board[]) {
 
 
   return (0);   // Signal that the game is not over
+}
+
+
+
+// Flips the board around so the same update_board function can be used whoever is playing.
+int flip_board(int board[]) {
+  int new_board[14];    // Temporary empty board
+
+  // Fill with old board's stones, with index rotated
+  for (int i = 0; i < 14; ++i) {
+    new_board[i] = board[(i + 7) % 14];
+  }
+
+
+  for (int i = 0; i < 14; ++i) {
+    board[i] = new_board[i];
+  }
+
+  return(0);
 }
