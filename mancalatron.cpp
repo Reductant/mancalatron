@@ -6,9 +6,7 @@ int move_number = 0;  // Counts the number of (half-)moves
 bool playing = true;  // Is game ongoing? Quit condition for main loop.
 int player = 0;       // Whose turn is it? 0 or 1
 int move_complete;    // Is the move finished? 0 means a double move.
-int x;
 
-//int board[] = {0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3};
 int board[] = {0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3};
 /********************************************************************
 This is the board from the POV of the player playing right now: player_zero.
@@ -76,8 +74,7 @@ int main() {
 
 /*************************************************************************
 To do:
-  Function for flipping the board
-  Compute final score
+#  Compute final score
   Maybe combine update_board and check_for_finish?
     That would make scoring simpler -- one function call, score as output
 **************************************************************************/
