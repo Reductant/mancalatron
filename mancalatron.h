@@ -27,82 +27,6 @@ void print_board(std::vector<int> board) {
 
 
 
-/**********************************************************************
-This handles board updating (from player_zero perspective only).
-The player 'picks' up the stones in well, then redistributes them.
-Opponent's mancala is skipped.
-***********************************************************************/
-std::vector<int> update_board(std::vector<int> board, int well) {
-
-  int stones_to_distribute = board[well];     // Stones 'picked up' by the user
-  int current_well;     // The well into which user 'drops' a stone
-
-  board[well] = 0;
-
-  current_well = well;
-
-  // Redistribute stones
-  while (stones_to_distribute > 0) {
-    ++current_well;
-    if (current_well == 14) current_well = 0;
-
-    // Ensure opponent's mancala is skipped
-    if (current_well != 0) {
-      ++board[current_well];
-      --stones_to_distribute;
-    }
-  }
-
-
-  // This needlessly repetitive block deals with capture. Landing in an empty well is understood as the current_well containing 1 stone.
-  // A better programmer would put this into a swtich statement. If you find a better programmer, let me know.
-
-  if ((current_well == 1) && (board[current_well] == 1) && (board[13] != 0)) {
-    board[1] = 0;
-    board[7] = board[7] + board[13] + 1;
-    board[13] = 0;
-  }
-
-  if ((current_well == 2) && (board[current_well] == 1) && (board[12] != 0)) {
-    board[2] = 0;
-    board[7] = board[7] + board[12] + 1;
-    board[12] = 0;
-  }
-
-  if ((current_well == 3) && (board[current_well] == 1) && (board[11] != 0)) {
-    board[3] = 0;
-    board[7] = board[7] + board[11] + 1;
-    board[11] = 0;
-  }
-
-  if ((current_well == 4) && (board[current_well] == 1) && (board[10] != 0)) {
-    board[4] = 0;
-    board[7] = board[7] + board[10] + 1;
-    board[10] = 0;
-  }
-
-
-  if ((current_well == 5) && (board[current_well] == 1) && (board[9] != 0)) {
-    board[5] = 0;
-    board[7] = board[7] + board[9] + 1;
-    board[9] = 0;
-  }
-
-  if ((current_well == 6) && (board[current_well] == 1) && (board[8] != 0)) {
-    board[6] = 0;
-    board[7] = board[7] + board[8] + 1;
-    board[8] = 0;
-  }
-
-  if (current_well == 7) {
-    std::cout << "DOUBLE MOVE";
-  }
-
-  return(board);
-
-}
-
-
 int check_for_finish(std::vector<int> board) {
 
     int total = 0;        // Counts the stones in player_zero's wells
@@ -131,6 +55,116 @@ int check_for_finish(std::vector<int> board) {
 
   return (0);   // Signal that the game is not over
 }
+
+
+
+
+/**********************************************************************
+This handles board updating (from player_zero perspective only).
+The player 'picks' up the stones in well, then redistributes them.
+Opponent's mancala is skipped.
+***********************************************************************/
+std::vector<int> do_human_move(std::vector<int> board) {
+
+  int well;     // Well selected by player
+
+  std::cout << "\n\n\n";
+  std::cout << "Enter well selection: ";
+  std::cin >> well;
+
+  // Test for valid well choice, then update board
+  if ((well >= 1) && (well <= 6) && board[well] > 0) {
+
+    // // Add this move to the move history
+    // history.push_back(well);
+    //
+    // // Print the move history for diagnosis
+    // std::cout << "\n\nHistory: ";
+    // for(int i = 0; i < history.size(); ++i) {
+    //   std::cout << history[i] << ", ";
+    // }
+    // std::cout << "\n";
+
+    // Make the desired move
+    int stones_to_distribute = board[well];     // Stones 'picked up' by the user
+    int current_well;     // The well into which user 'drops' a stone
+
+    board[well] = 0;
+
+    current_well = well;
+
+    // Redistribute stones
+    while (stones_to_distribute > 0) {
+      ++current_well;
+      if (current_well == 14) current_well = 0;
+
+      // Ensure opponent's mancala is skipped
+      if (current_well != 0) {
+        ++board[current_well];
+        --stones_to_distribute;
+      }
+    }
+
+
+    // This needlessly repetitive block deals with capture. Landing in an empty well is understood as the current_well containing 1 stone.
+    // A better programmer would put this into a swtich statement. If you find a better programmer, let me know.
+
+    if ((current_well == 1) && (board[current_well] == 1) && (board[13] != 0)) {
+      board[1] = 0;
+      board[7] = board[7] + board[13] + 1;
+      board[13] = 0;
+    }
+
+    if ((current_well == 2) && (board[current_well] == 1) && (board[12] != 0)) {
+      board[2] = 0;
+      board[7] = board[7] + board[12] + 1;
+      board[12] = 0;
+    }
+
+    if ((current_well == 3) && (board[current_well] == 1) && (board[11] != 0)) {
+      board[3] = 0;
+      board[7] = board[7] + board[11] + 1;
+      board[11] = 0;
+    }
+
+    if ((current_well == 4) && (board[current_well] == 1) && (board[10] != 0)) {
+      board[4] = 0;
+      board[7] = board[7] + board[10] + 1;
+      board[10] = 0;
+    }
+
+
+    if ((current_well == 5) && (board[current_well] == 1) && (board[9] != 0)) {
+      board[5] = 0;
+      board[7] = board[7] + board[9] + 1;
+      board[9] = 0;
+    }
+
+    if ((current_well == 6) && (board[current_well] == 1) && (board[8] != 0)) {
+      board[6] = 0;
+      board[7] = board[7] + board[8] + 1;
+      board[8] = 0;
+    }
+
+    if (current_well == 7) {
+      std::cout << "DOUBLE MOVE";
+    }
+
+    // Decide if the game is finished
+    //if (check_for_finish(board)) playing = false;
+
+
+  } else {
+    std::cout << "\nInvalid well choice. Ignoring.\n"
+  }
+
+
+
+
+  return(board);
+
+}
+
 
 
 
