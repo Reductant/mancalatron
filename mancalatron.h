@@ -51,7 +51,7 @@ int check_for_finish(std::vector<int> board) {
       return (1);   // Signal that the game is over
 
     }
-
+``
 
   return (0);   // Signal that the game is not over
 }
