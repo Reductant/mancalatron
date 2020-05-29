@@ -1,10 +1,10 @@
 struct game_state {
-  int move_number;        // Counts the number of (half-moves)
-  bool playing;         // Is the game ongoing?
-  int player;             // Whose turn is it? 0 or 1
+  int move_number;            // Counts the number of (half-moves)
+  bool playing;               // Is the game ongoing?
+  int player;                 // Whose turn is it? 0 or 1
   std::vector<int> history;   // Record of all valid well choices. 0 indicates a move passed by a player because of a double move
 
-  bool in_double_move;    // Is this a double move? Should the next player's move be skipped?
+  bool in_double_move;        // Is this a double move? Should the next player's move be skipped?
 
   std::vector<int> board = {0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3};
   /********************************************************************
@@ -28,9 +28,22 @@ struct game_state {
 
 /**********************************************************************
 Represents the board to std::cout
-Takes the board array as input
+Takes the game state as input
 ***********************************************************************/
-void print_board(std::vector<int> board) {
+void print_board(game_state game_as_is) {
+
+  // Display statistics
+  std::cout << "\n\nMove number " << game_as_is.move_number << "\n";
+  std::cout << "Player: " << game_as_is.player << "\n";
+  std::cout << "History: ";
+  for (int i = 0; i < game_as_is.history.size(); ++i) {
+    std::cout << game_as_is.history[i] << " ";
+  }
+  std::cout << "\nPlayer 0 score: " << game_as_is.score[0] <<
+    "\nPlayer 1 score: " << game_as_is.score[1];
+
+
+  std::vector<int> board = game_as_is.board;
 
   std::cout << "\n\n\n\t("
     << board[13] << ")\t("
@@ -80,10 +93,14 @@ int get_valid_well(game_state game_as_is) {
 }
 
 
+/***********************************************************************
+The main engine of the game.
 
+Takes a game state and a well number as inputs and implements the consequences of that action.
+
+Returns a game state with all the stones repositioned and scores calculated.
+************************************************************************/
 game_state update_game_state(game_state game, int well) {
-
-    std::cout << "Well: " << well;
 
     int stones_to_distribute = game.board[well];     // Stones 'picked up' by the user
 
@@ -114,36 +131,36 @@ game_state update_game_state(game_state game, int well) {
       game.board[13] = 0;
     }
 
-  if ((current_well == 2) && (game.board[current_well] == 1) && (game.board[12] != 0)) {
-    game.board[2] = 0;
-    game.board[7] = game.board[7] + game.board[12] + 1;
-    game.board[12] = 0;
-  }
+    if ((current_well == 2) && (game.board[current_well] == 1) && (game.board[12] != 0)) {
+      game.board[2] = 0;
+      game.board[7] = game.board[7] + game.board[12] + 1;
+      game.board[12] = 0;
+    }
 
-  if ((current_well == 3) && (game.board[current_well] == 1) && (game.board[11] != 0)) {
-    game.board[3] = 0;
-    game.board[7] = game.board[7] + game.board[11] + 1;
-    game.board[11] = 0;
-  }
+    if ((current_well == 3) && (game.board[current_well] == 1) && (game.board[11] != 0)) {
+      game.board[3] = 0;
+      game.board[7] = game.board[7] + game.board[11] + 1;
+      game.board[11] = 0;
+    }
 
-  if ((current_well == 4) && (game.board[current_well] == 1) && (game.board[10] != 0)) {
-    game.board[4] = 0;
-    game.board[7] = game.board[7] + game.board[10] + 1;
-    game.board[10] = 0;
-  }
+    if ((current_well == 4) && (game.board[current_well] == 1) && (game.board[10] != 0)) {
+      game.board[4] = 0;
+      game.board[7] = game.board[7] + game.board[10] + 1;
+      game.board[10] = 0;
+    }
 
 
-  if ((current_well == 5) && (game.board[current_well] == 1) && (game.board[9] != 0)) {
-    game.board[5] = 0;
-    game.board[7] = game.board[7] + game.board[9] + 1;
-    game.board[9] = 0;
-  }
+    if ((current_well == 5) && (game.board[current_well] == 1) && (game.board[9] != 0)) {
+      game.board[5] = 0;
+      game.board[7] = game.board[7] + game.board[9] + 1;
+      game.board[9] = 0;
+    }
 
-  if ((current_well == 6) && (game.board[current_well] == 1) && (game.board[8] != 0)) {
-    game.board[6] = 0;
-    game.board[7] = game.board[7] + game.board[8] + 1;
-    game.board[8] = 0;
-  }
+    if ((current_well == 6) && (game.board[current_well] == 1) && (game.board[8] != 0)) {
+      game.board[6] = 0;
+      game.board[7] = game.board[7] + game.board[8] + 1;
+      game.board[8] = 0;
+    }
 
 
 

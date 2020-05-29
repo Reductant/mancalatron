@@ -5,7 +5,8 @@
 
 int main() {
 
-  int well;             // The well input by the user
+  // The well input by the user
+  int well;
 
   // Initialise game state
   struct game_state game_as_is;
@@ -15,35 +16,27 @@ int main() {
   game_as_is.board = {0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3};
   game_as_is.in_double_move = false;
 
-  while (game_as_is.playing) {
 
+  // Main game loop
+  while (game_as_is.playing) {
 
     // If in a double move, player skips a turn.
     if (game_as_is.in_double_move == true) {
+
+      // Update game state without moving
       ++game_as_is.move_number;
       game_as_is.history.push_back(0);
       game_as_is.in_double_move = false;
       game_as_is.player = (game_as_is.player + 1) % 2;
       game_as_is.board = flip_board(game_as_is.board);
       continue;
-
-    } else {      // Otherwise, proceed with move.
-
-      // Display statistics
-      std::cout << "\n\nMove number " << game_as_is.move_number << "\n";
-      std::cout << "Player: " << game_as_is.player << "\n";
-      std::cout << "History: ";
-      for (int i = 0; i < game_as_is.history.size(); ++i) {
-        std::cout << game_as_is.history[i] << " ";
-      }
-      std::cout << "\nPlayer 0 score: " << game_as_is.score[0] <<
-        "\nPlayer 1 score: " << game_as_is.score[1];
-
-      print_board(game_as_is.board);
-
-      well = get_valid_well(game_as_is);
     }
 
+    // Display
+    print_board(game_as_is);
+
+    // Get well and check that it's between 1 and 6 and nonempty
+    well = get_valid_well(game_as_is);
 
     // Initialise a post-move game_state
     struct game_state new_game_state;
@@ -54,14 +47,14 @@ int main() {
     // The post-move game state becomes the new as_is game state
     game_as_is = new_game_state;
 
-    // Flip board
+    // Rotate the board for the next user
     game_as_is.board = flip_board(game_as_is.board);
 
-    // Check for finish
+    // If finished, set game_as_is.playing to false and update score
     game_as_is = check_for_finish(game_as_is);
 
   }
-
+  // End of main game loop
 
   // Display final scores
   if (game_as_is.score[0] > game_as_is.score[1]) {
