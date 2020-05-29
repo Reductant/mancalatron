@@ -2,19 +2,17 @@
 #include <vector>
 #include "mancalatron_v2.h"
 
-int well;             // The well input by the user
-
-
 
 int main() {
+
+  int well;             // The well input by the user
 
   // Initialise game state
   struct game_state game_as_is;
   game_as_is.move_number = 0;
   game_as_is.playing = true;
   game_as_is.player = 0;
-  //game_as_is.board = {0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3};
-  game_as_is.board = {0, 0, 1, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0};
+  game_as_is.board = {0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3};
   game_as_is.in_double_move = false;
 
   while (game_as_is.playing) {
@@ -38,6 +36,8 @@ int main() {
       for (int i = 0; i < game_as_is.history.size(); ++i) {
         std::cout << game_as_is.history[i] << " ";
       }
+      std::cout << "\nPlayer 0 score: " << game_as_is.score[0] <<
+        "\nPlayer 1 score: " << game_as_is.score[1];
 
       print_board(game_as_is.board);
 
@@ -62,6 +62,13 @@ int main() {
 
   }
 
+
+  // Display final scores
+  if (game_as_is.score[0] > game_as_is.score[1]) {
+    std::cout << "\n\n PLAYER 0 WINS!";
+  } else if (game_as_is.score[0] < game_as_is.score[1]) {
+    std::cout << "\n\n PLAYER 1 WINS!";
+  } else std::cout << "\n\nIt's a draw!\n\n";
 
   return (0);
 }

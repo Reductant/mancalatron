@@ -20,6 +20,8 @@ struct game_state {
 
   ***********************************************************************/
 
+  std::vector<int> score = {0, 0};    // Players' scores. Index is player ID.
+
 };
 
 
@@ -144,6 +146,7 @@ game_state update_game_state(game_state game, int well) {
   }
 
 
+
   // If you land in a mancala, set flag for double move
   if (current_well == 7) game.in_double_move = true;
 
@@ -151,6 +154,7 @@ game_state update_game_state(game_state game, int well) {
   game.player = (game.player + 1) % 2;
   game.history.push_back(well);
   ++game.move_number;
+  game.score[game.player] = game.board[7];
 
   return(game);
 
@@ -175,17 +179,23 @@ std::vector<int> flip_board(std::vector<int> board) {
 // Add up each row of wells. If either total is zero, the game is over.
 game_state check_for_finish(game_state game) {
 
-  int total = 0;      // Running total of stones in wells
+  int bottom_row_total = 0;      // Running total of stones in wells
   for (int i = 1; i < 7; ++i) {
-    total += game.board[i];
+    bottom_row_total += game.board[i];
   }
-  if (total == 0) game.playing = false;
+  if (bottom_row_total == 0) game.playing = false;
 
-  total = 0;
+  int top_row_total = 0;
   for (int i = 8; i < 14; ++i) {
-    total += game.board[i];
+    top_row_total += game.board[i];
   }
-  if (total == 0) game.playing = false;
+  if (top_row_total == 0) game.playing = false;
+
+  if (game.playing == false) {
+    game.score[game.player] += top_row_total;
+    game.score[(game.player + 1) % 2] += bottom_row_total;
+  }
+
 
   return(game);
 }
