@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "mancalatron.h"
 
 int well;             // The well input by the user, a variable in update_board
@@ -7,7 +8,9 @@ bool playing = true;  // Is game ongoing? Quit condition for main loop.
 int player = 0;       // Whose turn is it? 0 or 1
 int move_complete;    // Is the move finished? 0 means a double move.
 
-int board[] = {0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3};
+std::vector<int> history;   // Log of all valid moves. A zero indicates a move passed because of a double move
+
+std::vector<int> board = {0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3};
 /********************************************************************
 This is the board from the POV of the player playing right now: player_zero.
 Each int represents the contents of a well.
@@ -22,12 +25,11 @@ To allow easy redistribution, wells are numbered clockwise as follows:
 ***********************************************************************/
 
 
+
+
 int main() {
 
-
-  // Main game loop
   while (playing) {
-
     player = move_number % 2;
 
     std::cout << "\n\nMove number " << move_number << "\n";
@@ -39,42 +41,48 @@ int main() {
     std::cout << "Enter well selection: ";
     std::cin >> well;
 
-    // Test for valid well choice, then update board
-    if ((well >= 1) && (well <= 6) && board[well] > 0) {
 
-      // Make the desired move
-      move_complete = update_board(board, well);
-
-      // Decide if the game is finished
-      if (check_for_finish(board)) playing = false;
+      // Test for valid well choice, then update board
+      if ((well >= 1) && (well <= 6) && board[well] > 0) {
 
 
-    } else {
-      std::cout << "\nInvalid well choice. Ignoring.\n";
-      continue;
-    }
+        // Add this move to the move history
+        history.push_back(well);
 
-    // If it's a double move (move_complete == 0), repeat,
-    // Else change player, increment move count
-    if (move_complete == 0) {
-      std::cout << "DOUBLE MOVE";
-      continue;
-    } else {
-      ++move_number;
-      if (player == 0) player = 1; else player = 0;
-      flip_board(board);
-    }
+        // Print the move history for diagnosis
+        std::cout << "\n\nHistory: ";
+        for(int i = 0; i < history.size(); ++i) {
+          std::cout << history[i] << ", ";
+        }
+        std::cout << "\n";
 
-  }
-  // End of main game loop
+        // Make the desired move
+        board = update_board(board, well);
+
+        // Decide if the game is finished
+        if (check_for_finish(board)) playing = false;
+
+
+      } else {
+        std::cout << "\nInvalid well choice. Ignoring.\n";
+        continue;
+      }
+
+
+        // Put this in an if to check if the move is a double
+        ++move_number;
+        if (player == 0) player = 1; else player = 0;
+        board = flip_board(board);
+
+      }
 
   return (0);
 }
 
 
+
 /*************************************************************************
 To do:
-#  Compute final score
-  Maybe combine update_board and check_for_finish?
-    That would make scoring simpler -- one function call, score as output
+  Compute final score
+  Vectors a massive improvement, but need to re-establish double-moves
 **************************************************************************/

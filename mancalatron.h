@@ -2,7 +2,7 @@
 Represents the board to std::cout
 Takes the board array as input
 ***********************************************************************/
-int print_board(int board[]) {
+void print_board(std::vector<int> board) {
 
   std::cout << "\n\n\n\t("
     << board[13] << ")\t("
@@ -22,7 +22,7 @@ int print_board(int board[]) {
   // Well numbering for the user
   std::cout << "\n\n\t 1\t 2\t 3\t 4\t 5\t 6";
 
-    return(0);
+    //return(0);
 }
 
 
@@ -32,7 +32,7 @@ This handles board updating (from player_zero perspective only).
 The player 'picks' up the stones in well, then redistributes them.
 Opponent's mancala is skipped.
 ***********************************************************************/
-int update_board(int board[], int well) {
+std::vector<int> update_board(std::vector<int> board, int well) {
 
   int stones_to_distribute = board[well];     // Stones 'picked up' by the user
   int current_well;     // The well into which user 'drops' a stone
@@ -94,18 +94,16 @@ int update_board(int board[], int well) {
     board[8] = 0;
   }
 
-  // If you finish in your mancala, it's a double move.
-  // Signal the move is not over (return 0)
   if (current_well == 7) {
-    return (0);
-  } else {
-    return(1);
+    std::cout << "DOUBLE MOVE";
   }
+
+  return(board);
 
 }
 
 
-int check_for_finish(int board[]) {
+int check_for_finish(std::vector<int> board) {
 
     int total = 0;        // Counts the stones in player_zero's wells
 
@@ -137,18 +135,13 @@ int check_for_finish(int board[]) {
 
 
 // Flips the board around so the same update_board function can be used whoever is playing.
-int flip_board(int board[]) {
-  int new_board[14];    // Temporary empty board
+std::vector<int> flip_board(std::vector<int> board) {
+  std::vector<int> new_board = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};    // Temporary empty board
 
   // Fill with old board's stones, with index rotated
   for (int i = 0; i < 14; ++i) {
     new_board[i] = board[(i + 7) % 14];
   }
 
-
-  for (int i = 0; i < 14; ++i) {
-    board[i] = new_board[i];
-  }
-
-  return(0);
+  return(new_board);
 }
