@@ -170,3 +170,22 @@ std::vector<int> flip_board(std::vector<int> board) {
 
   return(new_board);
 }
+
+
+// Add up each row of wells. If either total is zero, the game is over.
+game_state check_for_finish(game_state game) {
+
+  int total = 0;      // Running total of stones in wells
+  for (int i = 1; i < 7; ++i) {
+    total += game.board[i];
+  }
+  if (total == 0) game.playing = false;
+
+  total = 0;
+  for (int i = 8; i < 14; ++i) {
+    total += game.board[i];
+  }
+  if (total == 0) game.playing = false;
+
+  return(game);
+}

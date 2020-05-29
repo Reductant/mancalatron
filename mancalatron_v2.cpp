@@ -13,7 +13,8 @@ int main() {
   game_as_is.move_number = 0;
   game_as_is.playing = true;
   game_as_is.player = 0;
-  game_as_is.board = {0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3};
+  //game_as_is.board = {0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3};
+  game_as_is.board = {0, 0, 1, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0};
   game_as_is.in_double_move = false;
 
   while (game_as_is.playing) {
@@ -53,15 +54,13 @@ int main() {
     // The post-move game state becomes the new as_is game state
     game_as_is = new_game_state;
 
-    // Check for finish
-
     // Flip board
     game_as_is.board = flip_board(game_as_is.board);
+
+    // Check for finish
+    game_as_is = check_for_finish(game_as_is);
+
   }
-
-
-
-
 
 
   return (0);
