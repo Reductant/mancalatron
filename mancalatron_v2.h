@@ -1,7 +1,7 @@
 struct game_state {
-  int move_number = 0;        // Counts the number of (half-moves)
-  bool playing = true;         // Is the game ongoing?
-  int player = 0;             // Whose turn is it? 0 or 1
+  int move_number;        // Counts the number of (half-moves)
+  bool playing;         // Is the game ongoing?
+  int player;             // Whose turn is it? 0 or 1
   std::vector<int> history;   // Record of all valid well choices. 0 indicates a move passed by a player because of a double move
 
   std::vector<int> board = {0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3};
@@ -18,7 +18,7 @@ struct game_state {
 
   ***********************************************************************/
 
-} game_as_is;
+};
 
 
 
@@ -72,5 +72,5 @@ int get_valid_well(game_state game_as_is) {
     }
   }
 
-  return(0);
+  return(well);
 }
