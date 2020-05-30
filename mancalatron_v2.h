@@ -20,7 +20,7 @@ struct game_state {
 
   ***********************************************************************/
 
-  std::vector<int> score = {0, 0};    // Players' scores. Index is player ID.
+  std::vector<int> score;    // Players' scores. Index is player ID.
 
 };
 
@@ -33,14 +33,14 @@ Takes the game state as input
 void print_board(game_state game_as_is) {
 
   // Display statistics
-  std::cout << "\n\nMove number " << game_as_is.move_number << "\n";
-  std::cout << "Player: " << game_as_is.player << "\n";
-  std::cout << "History: ";
+  std::cout << "\n\nMove number:\t" << game_as_is.move_number << "\n";
+  std::cout << "Player:\t\t" << game_as_is.player << "\n";
+  std::cout << "History:\t";
   for (int i = 0; i < game_as_is.history.size(); ++i) {
     std::cout << game_as_is.history[i] << " ";
   }
-  std::cout << "\nPlayer 0 score: " << game_as_is.score[0] <<
-    "\nPlayer 1 score: " << game_as_is.score[1];
+  std::cout << "\nPlayer 0 score:\t" << game_as_is.score[0] <<
+    "\nPlayer 1 score:\t" << game_as_is.score[1];
 
 
   std::vector<int> board = game_as_is.board;

@@ -15,6 +15,7 @@ int main() {
   game_as_is.player = 0;
   game_as_is.board = {0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3};
   game_as_is.in_double_move = false;
+  game_as_is.score = {0, 0};
 
 
   // Main game loop
