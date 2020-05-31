@@ -123,7 +123,7 @@ game_state update_game_state(game_state game, int well) {
   }
 
   // Handles stone capture
-  if ((current_well != 7) && (game.board[current_well] == 1) && (game.board[14 - current_well] != 0)) {
+  if ((current_well < 7) && (game.board[current_well] == 1) && (current_well != 0) &&  (game.board[14 - current_well] != 0)) {
     game.board[current_well] = 0;
     game.board[7] = game.board[7] + game.board[14 - current_well] + 1;
     game.board[14 - current_well] = 0;
