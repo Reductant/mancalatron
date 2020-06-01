@@ -134,10 +134,10 @@ game_state update_game_state(game_state game, int well) {
   if (current_well == 7) game.in_double_move = true;
 
   // Set flags for next move
+  game.score[game.player] = game.board[7];
   game.player = (game.player + 1) % 2;
   game.history.push_back(well);
   ++game.move_number;
-  game.score[game.player] = game.board[7];
 
   return(game);
 
@@ -175,10 +175,74 @@ game_state check_for_finish(game_state game) {
   if (top_row_total == 0) game.playing = false;
 
   if (game.playing == false) {
-    game.score[game.player] += top_row_total;
-    game.score[(game.player + 1) % 2] += bottom_row_total;
+    game.score[game.player] += bottom_row_total;
+    game.score[(game.player + 1) % 2] += top_row_total;
   }
 
 
   return(game);
+}
+
+
+/********************************************************************
+The main AI decision making component. It takes the game_as_is as
+input, then initialises a vector of six possible scores, one for each
+well. It cycles through the wells, using the update_board function to
+see the consequences of each move. The score here is the number of
+stones in the AI player's mancala. The function returns this vector.
+********************************************************************/
+std::vector<int> predict_move_outcomes(game_state game_as_is) {
+
+  // Initialise a post-move game_state
+  struct game_state potential_game_state;
+
+  // To hold predicted scores output by the score_predict function
+  std::vector<int> predicted_score = {0, 0, 0, 0, 0, 0};
+
+  // Get well and check that it's between 1 and 6 and nonempty
+  for (int i = 0; i < 6; ++i) {
+
+    // Awkwardly, wells are 1-indexed, predicted score is 0-indexed.
+    // If the well is empty, use score = -1 as a flag for INVALID WELL
+    if (game_as_is.board[i + 1] == 0) {
+      predicted_score[i] = -1;
+    } else {
+
+      // If the well is valid, predict the new game state and count the stones in AI player's mancala.
+      potential_game_state = update_game_state(game_as_is, i + 1);
+
+      predicted_score[i] = potential_game_state.board[7];
+    }
+  }
+
+  return(predicted_score);
+}
+
+
+/*********************************************************************
+A simple function that accepts the predicted_score vector returned by
+predict_move_outcomes, then returns the well that maximises the number
+of stones in the AI player's mancala at the end of that move. Nothing
+fancy.
+**********************************************************************/
+int ai_choose_well(game_state game_as_is) {
+      std::vector<int> predicted_score;
+
+      // Initialise a post-move game_state
+      struct game_state potential_game_state;
+
+      // Get a vector of six potential scores
+      predicted_score = predict_move_outcomes(game_as_is);
+
+      // Find the well that maximises predicted score
+      int current_highest_score = -1;
+      int current_best_well = 1;
+      for(int i = 0; i < 6; ++i) {
+        if (predicted_score[i] > current_highest_score) {
+          current_highest_score = predicted_score[i];
+          current_best_well = i + 1;
+        }
+      }
+
+  return(current_best_well);
 }
