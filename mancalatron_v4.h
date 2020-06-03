@@ -27,6 +27,12 @@ struct game_state {
 
 
 
+struct score_table {
+  std::vector<int> predicted_ai_score;
+  std::vector<int> best_opponent_score;
+} scores;
+
+
 /**********************************************************************
 Represents the board to std::cout
 Takes the game state as input
@@ -192,7 +198,7 @@ well. It cycles through the wells, using the update_board function to
 see the consequences of each move. The score here is the number of
 stones in the AI player's mancala. The function returns this vector.
 ********************************************************************/
-std::vector<int> predict_move_outcomes(game_state game_as_is) {
+score_table predict_move_outcomes(game_state game_as_is) {
 
   // Initialise a potential post-move game_state
   struct game_state ai_move;
@@ -202,7 +208,10 @@ std::vector<int> predict_move_outcomes(game_state game_as_is) {
 
   // To hold predicted scores output by the score_predict function
   std::vector<int> predicted_ai_score = {0, 0, 0, 0, 0, 0};
+
   std::vector<int> predicted_opponent_score = {0, 0, 0, 0, 0, 0};
+
+  std::vector<int> best_opponent_score = {0, 0, 0, 0, 0, 0};
 
   // Get well and check that it's between 1 and 6 and nonempty
   for (int i = 0; i < 6; ++i) {
@@ -216,9 +225,9 @@ std::vector<int> predict_move_outcomes(game_state game_as_is) {
       // If the well is valid, predict the new game state and count the stones in AI player's mancala.
       ai_move = update_game_state(game_as_is, i + 1);
 
-      std::cout << "\n\n AI CONTEMPLATES MOVING FROM WELL " << i + 1 << "\n";
+      //std::cout << "\n\n AI CONTEMPLATES MOVING FROM WELL " << i + 1 << "\n";
 
-      predicted_opponent_score = {0, 0, 0, 0, 0, 0};
+      std::vector<int> predicted_opponent_score = {0, 0, 0, 0, 0, 0};
 
       for (int j = 0; j < 6; ++j) {
 
@@ -226,21 +235,23 @@ std::vector<int> predict_move_outcomes(game_state game_as_is) {
       opponent_move = ai_move;
       opponent_move.board = flip_board(opponent_move.board);
 
-        std::cout<< "\n";
+        //std::cout<< "\n";
         if (opponent_move.board[j + 1] == 0) {
           predicted_opponent_score[j] = -1;
         } else {
           opponent_move = update_game_state(opponent_move, j + 1);
           predicted_opponent_score[j] = opponent_move.board[7];
-          std::cout << j + 1 << " " << predicted_opponent_score[j] << "\n";
+          //std::cout << j + 1 << " " << predicted_opponent_score[j] << "\n";
         }
 
       }
 
-      for (int score = 0; score < 6; ++score) std::cout << predicted_opponent_score[score];
+      //for (int score = 0; score < 6; ++score) std::cout << predicted_opponent_score[score];
       int opponent_highest_score = *std::max_element(predicted_opponent_score.begin(), predicted_opponent_score.end());
 
-      std::cout << "IF AI MOVES AT WELL " << i << " OPPONENT BEST SCORE IS " << opponent_highest_score;
+      //std::cout << "IF AI MOVES AT WELL " << i << " OPPONENT BEST SCORE IS " << opponent_highest_score;
+
+
 
 /**************************************************
  We've worked out the opponent highest score. Now make this function return a struct containing:
@@ -260,11 +271,23 @@ At the very least, run some experiments to find a way of returning the highest v
       // Insert the predicted mancala value into predicted_score
       predicted_ai_score[i] = ai_move.board[7];
 
+      best_opponent_score[i] = opponent_highest_score;
+
 
     }
   }
 
-  return(predicted_ai_score);
+
+  struct score_table scores;
+
+  scores.predicted_ai_score = predicted_ai_score;
+  scores.best_opponent_score = best_opponent_score;
+
+  //std::cout << "\nOPPONENT SCORE PREDICTIONS: ";
+  //for (int score = 0; score < 6; ++score) std::cout << scores.best_opponent_score[score] << " ";
+
+
+  return(scores);
 }
 
 
@@ -275,20 +298,33 @@ of stones in the AI player's mancala at the end of that move. Nothing
 fancy.
 **********************************************************************/
 int ai_choose_well(game_state game_as_is) {
-      std::vector<int> predicted_score;
+      std::vector<int> ai_scores;
+      std::vector<int> opponent_scores;
+
+      std::vector<int> score_differential = {0, 0, 0, 0, 0, 0};
+
+      struct score_table predicted_scores;
 
       // Initialise a post-move game_state
       struct game_state potential_game_state;
 
-      // Get a vector of six potential scores
-      predicted_score = predict_move_outcomes(game_as_is);
+      // Get a score_table struct of scores
+      predicted_scores = predict_move_outcomes(game_as_is);
+
+      ai_scores = predicted_scores.predicted_ai_score;
+      opponent_scores = predicted_scores.best_opponent_score;
+
+      // Subtract opponent_scores from ai_scores
+      for (int i = 0; i < 6; ++i) {
+        score_differential[i] = ai_scores[i] - opponent_scores[i];
+      }
 
       // Find the well that maximises predicted score
       int current_highest_score = -1;
       int current_best_well = 1;
       for(int i = 0; i < 6; ++i) {
-        if (predicted_score[i] > current_highest_score) {
-          current_highest_score = predicted_score[i];
+        if (score_differential[i] > current_highest_score) {
+          current_highest_score = score_differential[i];
           current_best_well = i + 1;
         }
       }
