@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
-#include "mancalatron_v4.h"
 #include <algorithm>
+#include "mancalatron_v4.h"
 
 
 

@@ -238,14 +238,7 @@ std::vector<int> predict_move_outcomes(game_state game_as_is) {
       }
 
       for (int score = 0; score < 6; ++score) std::cout << predicted_opponent_score[score];
-      int opponent_highest_score = -1;
-      int opponent_best_well = 1;
-      for (int q = 0; q < 6; ++q) {
-        if (predicted_opponent_score[q] > opponent_highest_score) {
-          opponent_highest_score = predicted_opponent_score[q];
-          opponent_best_well = q + 1;
-        }
-      }
+      int opponent_highest_score = *std::max_element(predicted_opponent_score.begin(), predicted_opponent_score.end());
 
       std::cout << "IF AI MOVES AT WELL " << i << " OPPONENT BEST SCORE IS " << opponent_highest_score;
 
@@ -259,6 +252,7 @@ This vector goes back to ai_choose_well
   which then makes a decision based on maybe a subtraction of each vector
 
 And for God's sake, tidy up this function, it's a mess!
+At the very least, run some experiments to find a way of returning the highest value from a vector and get rid of at least one of these for loops.
 
 ***********************************************/
 
