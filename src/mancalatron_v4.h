@@ -2,6 +2,8 @@
 #include <vector>
 #include <algorithm>
 
+#include <fmt/format.h>
+
 struct game_state {
   int move_number;            // Counts the number of (half-moves)
   bool playing;               // Is the game ongoing?
@@ -27,6 +29,25 @@ struct game_state {
   std::vector<int> score;              // Players' scores. Index is player ID.
   std::vector<int> ai_player;          // Index is player ID, value is AI=true
 
+
+  std::string to_string() {
+    auto board_string = fmt::format("Move number:\t{}\n", move_number);
+    board_string += fmt::format("Player:\t\t{}\n", player);
+    board_string += fmt::format("History:\t");
+    for (auto v: history)
+      board_string += fmt::format("{} ", v);
+    board_string += "\n";
+    board_string += fmt::format("Scores:\t\tPlayer 0: {}  Player 1: {}\n", score[0], score[1]);
+    board_string += "\n\n\n";
+    for (int i = 13; i >= 8; --i)
+      board_string += fmt::format("\t({})", board[i]);
+    board_string += fmt::format("\n ({})\t\t\t\t\t\t\t({})\n", board[0], board[7]);
+    board_string += "\n";
+    for (int i = 1; i < 7; ++i)
+      board_string += fmt::format("\t({})", board[i]);
+    board_string += "\n\n\t 1\t 2\t 3\t 4\t 5\t 6";
+    return board_string;
+  }
 };
 
 
@@ -41,40 +62,8 @@ struct score_table {
 Represents the board to std::cout
 Takes the game state as input
 ***********************************************************************/
-void print_board(game_state game_as_is) {
-
-  // Display statistics
-  std::cout << "\n\nMove number:\t" << game_as_is.move_number << "\n";
-  std::cout << "Player:\t\t" << game_as_is.player << "\n";
-  std::cout << "History:\t";
-  for (int i = 0; i < game_as_is.history.size(); ++i) {
-    std::cout << game_as_is.history[i] << " ";
-  }
-  std::cout << "\nPlayer 0 score:\t" << game_as_is.score[0] <<
-    "\nPlayer 1 score:\t" << game_as_is.score[1];
-
-
-  std::vector<int> board = game_as_is.board;
-
-  std::cout << "\n\n\n\t("
-    << board[13] << ")\t("
-    << board[12] << ")\t("
-    << board[11] << ")\t("
-    << board[10] << ")\t("
-    << board[9] << ")\t("
-    << board[8] << ")\t"
-    << "\n (" << board[0] << ")\t\t\t\t\t\t\t(" << board[7] << ")\n\t("
-    << board[1] << ")\t("
-    << board[2] << ")\t("
-    << board[3] << ")\t("
-    << board[4] << ")\t("
-    << board[5] << ")\t("
-    << board[6] << ")\t";
-
-  // Well numbering for the user
-  std::cout << "\n\n\t 1\t 2\t 3\t 4\t 5\t 6";
-
-    //return(0);
+void print_board(game_state &game_as_is) {
+  std::cout << game_as_is.to_string();
 }
 
 
