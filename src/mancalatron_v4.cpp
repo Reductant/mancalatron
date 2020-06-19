@@ -21,7 +21,22 @@ int main() {
   game_as_is.board = {0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3};
   game_as_is.in_double_move = false;
   game_as_is.score = {0, 0};
-  game_as_is.ai_player = {1, 0}; // Index is player ID, value is AI=true
+  game_as_is.ai_player = {0, 0}; // Index is player ID, value is AI=true
+
+
+  // Ask user which player is AI
+  int ai_player_choice = 2;
+  // Initialised to an invalid number as while condition
+
+  while ((ai_player_choice != 0) && (ai_player_choice != 1)) {
+    std::cout << "Which player is AI (0/1)? ";
+    std::cin >> ai_player_choice;
+
+    if ((ai_player_choice != 0) && (ai_player_choice != 1)) {
+      std::cout << "\nInvalid player choice\n";
+    }
+  }
+  game_as_is.ai_player[ai_player_choice] = 1;
 
 
   // Main game loop
@@ -41,11 +56,14 @@ int main() {
 
 
     std::cout << "\n******************************************************\n";
-    print_board(game_as_is);
+    //print_board(game_as_is);
 
 
     // If player is human...
     if (game_as_is.ai_player[game_as_is.player] == 0) {
+
+      print_board(game_as_is);
+      
       // Get well and check that it's between 1 and 6 and nonempty
       well = get_valid_well(game_as_is);
 
