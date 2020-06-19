@@ -1,3 +1,7 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
 struct game_state {
   int move_number;            // Counts the number of (half-moves)
   bool playing;               // Is the game ongoing?
