@@ -21,7 +21,7 @@ int main() {
   game_as_is.board = {0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3};
   game_as_is.in_double_move = false;
   game_as_is.score = {0, 0};
-  game_as_is.ai_player = {0, 1}; // Index is player ID, value is AI=true
+  game_as_is.ai_player = {1, 0}; // Index is player ID, value is AI=true
 
 
   // Main game loop
@@ -39,6 +39,8 @@ int main() {
       continue;
     }
 
+
+    std::cout << "\n******************************************************\n";
     print_board(game_as_is);
 
 

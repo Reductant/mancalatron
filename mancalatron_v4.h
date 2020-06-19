@@ -89,12 +89,15 @@ int get_valid_well(game_state game_as_is) {
     std::cout << "Enter well selection: ";
     std::cin >> well;
 
+
     if ((well >= 1) && (well <= 6) && (game_as_is.board[well] > 0)) {
       valid_well = true;
     } else {
       std::cout << "\nInvalid well choice. Ignoring.\n";
     }
   }
+
+  std::cout << "--------------------------------------------------------\n";
 
   return(well);
 }
@@ -208,18 +211,16 @@ score_table predict_move_outcomes(game_state game_as_is) {
 
   // To hold predicted scores output by the score_predict function
   std::vector<int> predicted_ai_score = {0, 0, 0, 0, 0, 0};
-
   std::vector<int> predicted_opponent_score = {0, 0, 0, 0, 0, 0};
-
   std::vector<int> best_opponent_score = {0, 0, 0, 0, 0, 0};
 
   // Get well and check that it's between 1 and 6 and nonempty
   for (int i = 0; i < 6; ++i) {
 
     // Awkwardly, wells are 1-indexed, predicted score is 0-indexed.
-    // If the well is empty, use score = -1 as a flag for INVALID WELL
+    // If the well is empty, use score = -1000 as a flag for INVALID WELL
     if (game_as_is.board[i + 1] == 0) {
-      predicted_ai_score[i] = -1;
+      predicted_ai_score[i] = -1000;
     } else {
 
       // If the well is valid, predict the new game state and count the stones in AI player's mancala.
@@ -235,74 +236,60 @@ score_table predict_move_outcomes(game_state game_as_is) {
       opponent_move = ai_move;
       opponent_move.board = flip_board(opponent_move.board);
 
-        //std::cout<< "\n";
+      // If an AI move leads to a double move, skip the prediction bit and set the predicted_opponent_score to a set of flags to do whatever.
+      if (opponent_move.in_double_move == false) {
+        // Check that the well is non-empty, return flag of -1000 if empty
         if (opponent_move.board[j + 1] == 0) {
-          predicted_opponent_score[j] = -1;
+          predicted_opponent_score[j] = -1000;
         } else {
           opponent_move = update_game_state(opponent_move, j + 1);
           predicted_opponent_score[j] = opponent_move.board[7];
-          //std::cout << j + 1 << " " << predicted_opponent_score[j] << "\n";
         }
+
+      } else {
+        predicted_opponent_score = {-1000, -1000, -1000, -1000, -1000, -1000};
+      }
+
+
 
       }
 
-      //for (int score = 0; score < 6; ++score) std::cout << predicted_opponent_score[score];
+      // What is the maximum score the opponent can achieve if AI plays its move?
       int opponent_highest_score = *std::max_element(predicted_opponent_score.begin(), predicted_opponent_score.end());
 
-      //std::cout << "IF AI MOVES AT WELL " << i << " OPPONENT BEST SCORE IS " << opponent_highest_score;
 
-
-
-/**************************************************
- We've worked out the opponent highest score. Now make this function return a struct containing:
-
-a vector giving the predicted AI score for each well
-a vector containing the opponent highest score a subsequent move at that well
-
-This vector goes back to ai_choose_well
-  which then makes a decision based on maybe a subtraction of each vector
-
-And for God's sake, tidy up this function, it's a mess!
-At the very least, run some experiments to find a way of returning the highest value from a vector and get rid of at least one of these for loops.
-
-***********************************************/
-
-
-      // Insert the predicted mancala value into predicted_score
+      // Insert the predicted mancala values into predicted_score
       predicted_ai_score[i] = ai_move.board[7];
-
       best_opponent_score[i] = opponent_highest_score;
-
 
     }
   }
 
 
+  // Build a struct for output
   struct score_table scores;
-
   scores.predicted_ai_score = predicted_ai_score;
   scores.best_opponent_score = best_opponent_score;
-
-  //std::cout << "\nOPPONENT SCORE PREDICTIONS: ";
-  //for (int score = 0; score < 6; ++score) std::cout << scores.best_opponent_score[score] << " ";
-
 
   return(scores);
 }
 
 
 /*********************************************************************
-A simple function that accepts the predicted_score vector returned by
-predict_move_outcomes, then returns the well that maximises the number
-of stones in the AI player's mancala at the end of that move. Nothing
-fancy.
+This function uses the output from predict_move_outcomes to decide the
+best AI well. predict_move_outcomes gives a vector of AI scores for each
+well and a vector of best possible opponent scores for each well in the
+next move. score_differential is a subtraction of one from the other.
+The AI chooses the well that gives the biggest difference.
 **********************************************************************/
 int ai_choose_well(game_state game_as_is) {
+
+      // Initialise three vectors to hold score predictions
       std::vector<int> ai_scores;
       std::vector<int> opponent_scores;
-
       std::vector<int> score_differential = {0, 0, 0, 0, 0, 0};
 
+      // Initialise a score table
       struct score_table predicted_scores;
 
       // Initialise a post-move game_state
@@ -319,8 +306,19 @@ int ai_choose_well(game_state game_as_is) {
         score_differential[i] = ai_scores[i] - opponent_scores[i];
       }
 
-      // Find the well that maximises predicted score
-      int current_highest_score = -1;
+      // std::cout << "\n\nAI SCORE VECTOR:\t\t";
+      // for (int i = 0; i < 6; ++i) std::cout << ai_scores[i] << "\t";
+      //
+      //
+      // std::cout << "\n\nOPPONENT SCORE VECTOR:\t\t";
+      // for (int i = 0; i < 6; ++i) std::cout << opponent_scores[i] << "\t";
+      //
+      //
+      // std::cout << "\n\nSCORE DIFFERENTIAL VECTOR: \t";
+      // for (int i = 0; i < 6; ++i) std::cout << score_differential[i] << "\t";
+
+      // Find the well that maximises predicted score differential
+      int current_highest_score = -1000;
       int current_best_well = 1;
       for(int i = 0; i < 6; ++i) {
         if (score_differential[i] > current_highest_score) {
@@ -331,3 +329,11 @@ int ai_choose_well(game_state game_as_is) {
 
   return(current_best_well);
 }
+
+
+
+/*******************************
+The AI is ignoring move chaining. If an AI move would end in a mancala,
+it is ignoring the fact that the opponent would not have a chance to retaliate.
+Maybe use the in_double_move flag?
+********************************/
