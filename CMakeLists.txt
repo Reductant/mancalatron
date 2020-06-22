@@ -11,6 +11,8 @@ conan_basic_setup()
 # put all your source files here:
 set(sources 
     src/mancalatron_v4.cpp
+    src/utils.cpp
+    src/gamestate.cpp
 )
 
 set(CMAKE_CXX_STANDARD 17)
