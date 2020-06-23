@@ -26,7 +26,7 @@ int main() {
 
   // Initialised to an invalid number as while condition
   int ai_player_choice = 2;
-  
+
   // Ask user which player is AI
   while ((ai_player_choice != 0) && (ai_player_choice != 1)) {
     std::cout << "Which player is AI (0/1)? ";
@@ -79,7 +79,7 @@ int main() {
 
     else
 
-    // AI makes a move, with 1/2-step lookahead
+    // AI makes a move, considering opponent retaliation
     {
 
       ai_well_choice = ai_choose_well(game_as_is);
