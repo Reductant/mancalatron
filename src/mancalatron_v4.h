@@ -322,11 +322,3 @@ int ai_choose_well(game_state game_as_is) {
 
   return(current_best_well);
 }
-
-
-
-/*******************************
-The AI is ignoring move chaining. If an AI move would end in a mancala,
-it is ignoring the fact that the opponent would not have a chance to retaliate.
-Maybe use the in_double_move flag?
-********************************/
